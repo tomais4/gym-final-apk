@@ -1,4 +1,4 @@
-name: Build APK Final (Forced Yes)
+name: Build APK Final (Auto-Find)
 
 on:
   push:
@@ -24,20 +24,19 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # Removemos a instalação manual do Flutter para deixar o Flet decidir
-      # e baixar a versão exata que ele quer.
-
       - name: 📦 Install Flet
         run: |
           pip install flet
           flet --version
 
-      - name: 🏗️ Build APK (Com confirmação automática)
+      # O "yes" força o aceite da instalação do SDK
+      - name: 🏗️ Build APK
         run: |
           yes | flet build apk --verbose
 
-      - name: 📤 Upload APK
+      # AQUI ESTÁ A MÁGICA: O "**" procura em todas as subpastas
+      - name: 📤 Upload APK (Busca Automática)
         uses: actions/upload-artifact@v4
         with:
           name: gym-ciencia-tomate-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: "**/*.apk"
